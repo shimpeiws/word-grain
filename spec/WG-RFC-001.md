@@ -80,7 +80,7 @@ A WordGrain document is a JSON object with three top-level properties:
 
 ```json
 {
-  "$schema": "https://example.com/schemas/wordgrain/v0.1.0",
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
   "meta": { ... },
   "grains": [ ... ]
 }
@@ -232,7 +232,7 @@ Files MUST be encoded as UTF-8 without BOM.
 The `$schema` field indicates the specification version:
 
 ```
-https://example.com/schemas/wordgrain/v{MAJOR}.{MINOR}.{PATCH}
+https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v{MAJOR}.{MINOR}.{PATCH}/wordgrain.schema.json
 ```
 
 ### 5.2 Semantic Versioning Rules
@@ -264,7 +264,7 @@ Until registered, use: `application/json`
 
 ```json
 {
-  "$schema": "https://example.com/schemas/wordgrain/v0.1.0",
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
   "meta": {
     "source": "manual",
     "artist": "Example Artist",
@@ -286,8 +286,8 @@ See [examples/kendrick-lamar.wg.json](../examples/kendrick-lamar.wg.json) for a 
 
 The official JSON Schema is available at:
 
-- Local: [schema/wordgrain.schema.json](../schema/wordgrain.schema.json)
-- Remote: `https://example.com/schemas/wordgrain/v0.1.0/wordgrain.schema.json`
+- Local: [schema/v0.1.0/wordgrain.schema.json](../schema/v0.1.0/wordgrain.schema.json)
+- Remote: `https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json`
 
 ### 8.2 Validation Rules
 
@@ -300,10 +300,10 @@ The official JSON Schema is available at:
 
 ```bash
 # Using ajv-cli
-npx ajv validate -s schema/wordgrain.schema.json -d your-file.wg.json --spec=draft2020
+npx ajv validate -s schema/v0.1.0/wordgrain.schema.json -d your-file.wg.json --spec=draft2020
 
 # Using Python jsonschema
-python -m jsonschema -i your-file.wg.json schema/wordgrain.schema.json
+python -m jsonschema -i your-file.wg.json schema/v0.1.0/wordgrain.schema.json
 ```
 
 ---

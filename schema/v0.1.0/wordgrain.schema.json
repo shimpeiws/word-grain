@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schemas/wordgrain/v0.1.0/wordgrain.schema.json",
+  "$id": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
   "title": "WordGrain",
   "description": "A JSON format for storing vocabulary data extracted from musical lyrics. Originally developed for hip-hop lyric analysis.",
   "type": "object",
@@ -11,7 +11,7 @@
       "type": "string",
       "format": "uri",
       "description": "URI reference to the WordGrain schema version",
-      "pattern": "^https://example\\.com/schemas/wordgrain/v[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "pattern": "^https://raw\\.githubusercontent\\.com/shimpeiws/word-grain/main/schema/v[0-9]+\\.[0-9]+\\.[0-9]+/wordgrain\\.schema\\.json$"
     },
     "meta": {
       "$ref": "#/$defs/Meta"

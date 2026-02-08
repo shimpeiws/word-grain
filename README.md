@@ -17,7 +17,7 @@ WordGrain provides a standardized way to represent linguistic analysis of musica
 
 ```json
 {
-  "$schema": "https://example.com/schemas/wordgrain/v0.1.0",
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
   "meta": {
     "source": "genius",
     "artist": "Kendrick Lamar",
@@ -37,10 +37,10 @@ WordGrain provides a standardized way to represent linguistic analysis of musica
 
 ```bash
 # Using ajv-cli
-npx ajv validate -s schema/wordgrain.schema.json -d your-file.wg.json
+npx ajv validate -s schema/v0.1.0/wordgrain.schema.json -d your-file.wg.json
 
 # Using Python jsonschema
-python -m jsonschema -i your-file.wg.json schema/wordgrain.schema.json
+python -m jsonschema -i your-file.wg.json schema/v0.1.0/wordgrain.schema.json
 ```
 
 ## Specification
@@ -64,8 +64,8 @@ See [spec/WG-RFC-001.md](spec/WG-RFC-001.md) for the full specification.
 
 The JSON Schema is available at:
 
-- Local: [schema/wordgrain.schema.json](schema/wordgrain.schema.json)
-- Remote: `https://example.com/schemas/wordgrain/v0.1.0/wordgrain.schema.json`
+- Local: [schema/v0.1.0/wordgrain.schema.json](schema/v0.1.0/wordgrain.schema.json)
+- Remote: `https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json`
 
 ## License
 

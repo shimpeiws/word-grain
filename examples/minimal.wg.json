@@ -1,0 +1,9 @@
+{
+  "$schema": "https://example.com/schemas/wordgrain/v0.1.0",
+  "meta": {
+    "source": "manual",
+    "artist": "Example Artist",
+    "generated_at": "2026-02-08T00:00:00Z"
+  },
+  "grains": []
+}

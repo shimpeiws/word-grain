@@ -47,7 +47,7 @@ const CARDS = [
     href: "/playground",
     title: "Playground",
     description:
-      "Compare two WordGrain files side-by-side with structural diff",
+      "Compare two WordGrain files side-by-side with statistics",
     icon: (
       <svg
         className="h-6 w-6"

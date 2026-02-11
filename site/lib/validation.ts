@@ -26,13 +26,18 @@ export function validate(
   data: unknown
 ): ValidationResult {
   const ajv = getAjv();
-  const valid = ajv.validate(schema, data);
+  const schemaId = (schema as Record<string, unknown>).$id as string | undefined;
+  let validateFn = schemaId ? ajv.getSchema(schemaId) : undefined;
+  if (!validateFn) {
+    validateFn = ajv.compile(schema);
+  }
+  const valid = validateFn(data);
 
   if (valid) {
     return { valid: true, errors: [] };
   }
 
-  const errors: ValidationError[] = (ajv.errors ?? []).map((err) => ({
+  const errors: ValidationError[] = (validateFn.errors ?? []).map((err) => ({
     path: err.instancePath || "/",
     message: err.message ?? "Unknown error",
   }));

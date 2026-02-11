@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import ComparisonView from "@/components/playground/ComparisonView";
-import DiffDisplay from "@/components/playground/DiffDisplay";
 import StatsSummary from "@/components/playground/StatsSummary";
 import {
   validate,
@@ -34,15 +33,17 @@ export default function PlaygroundPage() {
       setLeftResult(null);
       return;
     }
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(leftJson);
-      setLeftResult(validate(schema, parsed));
+      parsed = JSON.parse(leftJson);
     } catch {
       setLeftResult({
         valid: false,
         errors: [{ path: "/", message: "Invalid JSON syntax" }],
       });
+      return;
     }
+    setLeftResult(validate(schema, parsed));
   }, [schema, leftJson]);
 
   // Validate right document when schema or rightJson changes
@@ -51,15 +52,17 @@ export default function PlaygroundPage() {
       setRightResult(null);
       return;
     }
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(rightJson);
-      setRightResult(validate(schema, parsed));
+      parsed = JSON.parse(rightJson);
     } catch {
       setRightResult({
         valid: false,
         errors: [{ path: "/", message: "Invalid JSON syntax" }],
       });
+      return;
     }
+    setRightResult(validate(schema, parsed));
   }, [schema, rightJson]);
 
   const handleLeftChange = useCallback((json: string) => {
@@ -99,7 +102,7 @@ export default function PlaygroundPage() {
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Compare two WordGrain documents side-by-side. Load examples or drop
-          your own files to see structural diffs and statistics.
+          your own files to see validation results and statistics.
         </p>
       </div>
 
@@ -115,15 +118,9 @@ export default function PlaygroundPage() {
       </section>
 
       {bothValid && (
-        <>
-          <section className="mb-10">
-            <DiffDisplay left={leftDoc} right={rightDoc} />
-          </section>
-
-          <section className="mb-10">
-            <StatsSummary left={leftDoc} right={rightDoc} />
-          </section>
-        </>
+        <section className="mb-10">
+          <StatsSummary left={leftDoc} right={rightDoc} />
+        </section>
       )}
 
       {!bothValid && (leftJson.trim() || rightJson.trim()) && (

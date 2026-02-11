@@ -10,3 +10,8 @@
 *~
 .idea/
 .vscode/
+
+# Site
+site/node_modules/
+site/.next/
+site/out/

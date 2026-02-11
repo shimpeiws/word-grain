@@ -1,0 +1,92 @@
+{
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
+  "meta": {
+    "source": "genius",
+    "artist": "Kendrick Lamar",
+    "corpus_size": 142,
+    "total_words": 89420,
+    "generated_at": "2026-02-08T12:00:00Z",
+    "generator": "wordgrain-cli/0.1.0",
+    "language": "en",
+    "description": "Vocabulary analysis of Kendrick Lamar's studio albums (2011-2024)"
+  },
+  "grains": [
+    {
+      "word": "hustle",
+      "normalized": "hustle",
+      "pos": "noun",
+      "frequency": 47,
+      "frequency_normalized": 5.26,
+      "tfidf": 0.82,
+      "sentiment": "positive",
+      "sentiment_score": 0.65,
+      "is_slang": false,
+      "categories": ["work", "struggle", "ambition"],
+      "definition": "The continuous effort to succeed and make money",
+      "contexts": [
+        {
+          "line": "everyday hustle never stops",
+          "track": "DNA.",
+          "album": "DAMN.",
+          "year": 2017
+        },
+        {
+          "line": "I got hustle though, ambition flow inside my DNA",
+          "track": "DNA.",
+          "album": "DAMN.",
+          "year": 2017,
+          "timestamp": "1:23"
+        }
+      ],
+      "first_seen": "Section.80",
+      "collocations": [
+        { "word": "grind", "score": 0.78, "position": "after" },
+        { "word": "everyday", "score": 0.65, "position": "before" }
+      ]
+    },
+    {
+      "word": "Compton",
+      "normalized": "compton",
+      "pos": "noun",
+      "frequency": 89,
+      "tfidf": 0.94,
+      "sentiment": "mixed",
+      "is_slang": false,
+      "categories": ["location", "identity", "origin"],
+      "definition": "City in Los Angeles County; Kendrick's hometown",
+      "contexts": [
+        {
+          "line": "Compton, USA, made me an angel on angel dust",
+          "track": "Compton",
+          "album": "good kid, m.A.A.d city",
+          "year": 2012,
+          "featuring": ["Dr. Dre"]
+        }
+      ]
+    },
+    {
+      "word": "drip",
+      "normalized": "drip",
+      "pos": "noun",
+      "frequency": 12,
+      "tfidf": 0.45,
+      "sentiment": "positive",
+      "sentiment_score": 0.72,
+      "is_slang": true,
+      "categories": ["fashion", "style", "wealth"],
+      "definition": "Fashionable clothing or accessories; style and swagger",
+      "etymology": "Hip-hop slang emerging mid-2010s, possibly from Atlanta rap scene",
+      "contexts": [
+        {
+          "line": "My drip is never lacking",
+          "track": "HUMBLE.",
+          "album": "DAMN.",
+          "year": 2017
+        }
+      ],
+      "extensions": {
+        "x-urban-dictionary-rating": 4.2
+      }
+    }
+  ]
+}

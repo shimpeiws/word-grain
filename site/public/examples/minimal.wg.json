@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
+  "meta": {
+    "source": "manual",
+    "artist": "Example Artist",
+    "generated_at": "2026-02-08T00:00:00Z"
+  },
+  "grains": []
+}

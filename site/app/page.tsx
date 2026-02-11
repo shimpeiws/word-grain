@@ -1,6 +1,7 @@
 import HeroSection from "@/components/landing/HeroSection";
 import SchemaOverview from "@/components/landing/SchemaOverview";
 import FeatureCards from "@/components/landing/FeatureCards";
+import EcosystemSection from "@/components/landing/EcosystemSection";
 
 const EXAMPLE_JSON = `{
   "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
@@ -86,6 +87,7 @@ export default function Home() {
       </section>
 
       <FeatureCards />
+      <EcosystemSection />
     </>
   );
 }

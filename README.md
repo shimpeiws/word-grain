@@ -2,6 +2,10 @@
 
 A JSON format for storing vocabulary data extracted from musical lyrics. Originally developed for hip-hop lyric analysis.
 
+## Documentation
+
+Full documentation is available at: https://shimpeiws.github.io/word-grain/
+
 ## Overview
 
 WordGrain provides a standardized way to represent linguistic analysis of musical lyrics, including:

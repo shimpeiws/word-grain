@@ -65,17 +65,17 @@ export default function HeroSection() {
 
         {/* Decorative code snippet */}
         <div className="absolute right-8 top-1/2 hidden -translate-y-1/2 lg:block">
-          <div className="w-64 rounded-lg border border-zinc-200/60 bg-white/70 p-4 font-mono text-xs text-zinc-400 shadow-sm backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/70 dark:text-zinc-600">
+          <div className="w-96 rounded-lg border border-zinc-200/60 bg-white/70 p-8 font-mono text-base text-zinc-400 shadow-sm backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/70 dark:text-zinc-600">
             <div className="text-zinc-500 dark:text-zinc-500">
               {"{"} <span className="text-blue-600 dark:text-blue-400">&quot;word&quot;</span>: <span className="text-green-600 dark:text-green-400">&quot;hustle&quot;</span>,
             </div>
-            <div className="ml-2 text-zinc-500 dark:text-zinc-500">
+            <div className="ml-6 text-zinc-500 dark:text-zinc-500">
               <span className="text-blue-600 dark:text-blue-400">&quot;frequency&quot;</span>: <span className="text-amber-600 dark:text-amber-400">47</span>,
             </div>
-            <div className="ml-2 text-zinc-500 dark:text-zinc-500">
+            <div className="ml-6 text-zinc-500 dark:text-zinc-500">
               <span className="text-blue-600 dark:text-blue-400">&quot;sentiment&quot;</span>: <span className="text-green-600 dark:text-green-400">&quot;positive&quot;</span>,
             </div>
-            <div className="ml-2 text-zinc-500 dark:text-zinc-500">
+            <div className="ml-6 text-zinc-500 dark:text-zinc-500">
               <span className="text-blue-600 dark:text-blue-400">&quot;tfidf&quot;</span>: <span className="text-amber-600 dark:text-amber-400">0.82</span>
             </div>
             <div className="text-zinc-500 dark:text-zinc-500">{"}"}</div>

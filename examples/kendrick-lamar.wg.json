@@ -1,5 +1,6 @@
 {
-  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
+  "schema_version": "0.2.0",
   "meta": {
     "source": "genius",
     "artist": "Kendrick Lamar",

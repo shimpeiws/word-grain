@@ -9,6 +9,8 @@ import type { ValidationResult } from "@/lib/validation";
 const EXAMPLES = [
   { label: "Kendrick Lamar", file: "kendrick-lamar.wg.json" },
   { label: "Minimal", file: "minimal.wg.json" },
+  { label: "KOHH Bars", file: "kohh-bar.wg.json" },
+  { label: "Mixed", file: "mixed.wg.json" },
 ] as const;
 
 interface ComparisonViewProps {

@@ -2,172 +2,48 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
   "title": "WordGrain",
-  "description": "A JSON format for storing vocabulary and lyrical structure data extracted from musical lyrics. Supports word (morpheme), bar (phrase/line), and verse (full verse) granularity levels.",
+  "description": "A JSON format for storing vocabulary data and lyric bar analysis extracted from musical lyrics.",
   "type": "object",
-  "required": ["$schema", "schema_version", "type"],
-  "discriminator": {
-    "propertyName": "type"
-  },
-  "oneOf": [
-    { "$ref": "#/$defs/WordDocument" },
-    { "$ref": "#/$defs/BarDocument" },
-    { "$ref": "#/$defs/VerseDocument" }
+  "required": ["$schema", "schema_version", "meta"],
+  "anyOf": [
+    { "required": ["grains"] },
+    { "required": ["bars"] }
   ],
-  "$defs": {
-    "WordDocument": {
-      "type": "object",
-      "description": "Word-level (morpheme) grain document. Compatible with v0.1.0 structure.",
-      "required": ["$schema", "schema_version", "type", "meta", "grains"],
-      "additionalProperties": false,
-      "properties": {
-        "$schema": { "$ref": "#/$defs/SchemaUri" },
-        "schema_version": { "$ref": "#/$defs/SchemaVersion" },
-        "type": {
-          "const": "word"
-        },
-        "meta": { "$ref": "#/$defs/Meta" },
-        "grains": {
-          "type": "array",
-          "description": "Array of vocabulary grain entries",
-          "items": { "$ref": "#/$defs/Grain" },
-          "minItems": 0
-        }
-      }
-    },
-    "BarDocument": {
-      "type": "object",
-      "description": "Bar-level (phrase/line) grain document. Represents 1-2 lines of lyrics as a unit.",
-      "required": ["$schema", "schema_version", "type", "text", "source"],
-      "additionalProperties": false,
-      "properties": {
-        "$schema": { "$ref": "#/$defs/SchemaUri" },
-        "schema_version": { "$ref": "#/$defs/SchemaVersion" },
-        "type": {
-          "const": "bar"
-        },
-        "text": {
-          "type": "string",
-          "description": "The lyric text of the bar (1-2 lines)",
-          "minLength": 1
-        },
-        "source": { "$ref": "#/$defs/BarSource" },
-        "metrics": { "$ref": "#/$defs/BarMetrics" },
-        "semantics": { "$ref": "#/$defs/BarSemantics" },
-        "language": {
-          "type": "string",
-          "description": "ISO 639-1 language code",
-          "pattern": "^[a-z]{2}$",
-          "default": "en"
-        }
-      }
-    },
-    "VerseDocument": {
-      "type": "object",
-      "description": "Verse-level grain document. Represents a full verse. Detailed schema to be defined in a future version.",
-      "required": ["$schema", "schema_version", "type"],
-      "additionalProperties": true,
-      "properties": {
-        "$schema": { "$ref": "#/$defs/SchemaUri" },
-        "schema_version": { "$ref": "#/$defs/SchemaVersion" },
-        "type": {
-          "const": "verse"
-        }
-      }
-    },
-    "SchemaUri": {
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
       "type": "string",
       "format": "uri",
       "description": "URI reference to the WordGrain schema version",
       "pattern": "^https://raw\\.githubusercontent\\.com/shimpeiws/word-grain/main/schema/v[0-9]+\\.[0-9]+\\.[0-9]+/wordgrain\\.schema\\.json$"
     },
-    "SchemaVersion": {
+    "schema_version": {
       "type": "string",
       "description": "Schema version identifier",
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
       "examples": ["0.2.0"]
     },
-    "BarSource": {
-      "type": "object",
-      "description": "Source information for a bar",
-      "required": ["artist", "track"],
-      "additionalProperties": false,
-      "properties": {
-        "artist": {
-          "type": "string",
-          "description": "Artist name",
-          "minLength": 1
-        },
-        "track": {
-          "type": "string",
-          "description": "Track/song title",
-          "minLength": 1
-        },
-        "album": {
-          "type": "string",
-          "description": "Album name"
-        },
-        "year": {
-          "type": "integer",
-          "description": "Release year",
-          "minimum": 1,
-          "maximum": 2200
-        },
-        "featuring": {
-          "type": "array",
-          "description": "Featured artists on this track",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      }
+    "meta": {
+      "$ref": "#/$defs/Meta"
     },
-    "BarMetrics": {
-      "type": "object",
-      "description": "Quantitative metrics for a bar",
-      "additionalProperties": false,
-      "properties": {
-        "lines": {
-          "type": "integer",
-          "description": "Number of lines in the bar",
-          "minimum": 1
-        },
-        "syllables": {
-          "type": "integer",
-          "description": "Total syllable count",
-          "minimum": 0
-        },
-        "mora": {
-          "type": ["integer", "null"],
-          "description": "Mora count (for Japanese and other mora-timed languages). Null if not applicable.",
-          "minimum": 0
-        }
-      }
+    "grains": {
+      "type": "array",
+      "description": "Array of vocabulary grain entries",
+      "items": {
+        "$ref": "#/$defs/Grain"
+      },
+      "minItems": 0
     },
-    "BarSemantics": {
-      "type": "object",
-      "description": "Semantic attributes of a bar",
-      "additionalProperties": false,
-      "properties": {
-        "mood": {
-          "$ref": "#/$defs/Mood"
-        }
-      }
-    },
-    "Mood": {
-      "type": "string",
-      "description": "The dominant mood or emotional tone of the bar",
-      "enum": [
-        "cold",
-        "defiant",
-        "melancholic",
-        "aggressive",
-        "introspective",
-        "celebratory",
-        "tender",
-        "weary"
-      ]
-    },
+    "bars": {
+      "type": "array",
+      "description": "Array of lyric bar entries",
+      "items": {
+        "$ref": "#/$defs/Bar"
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
     "Meta": {
       "type": "object",
       "description": "Metadata about the WordGrain document",
@@ -246,9 +122,17 @@
           "type": "string",
           "description": "Part of speech tag",
           "enum": [
-            "noun", "verb", "adjective", "adverb", "pronoun",
-            "preposition", "conjunction", "interjection",
-            "determiner", "particle", "other"
+            "noun",
+            "verb",
+            "adjective",
+            "adverb",
+            "pronoun",
+            "preposition",
+            "conjunction",
+            "interjection",
+            "determiner",
+            "particle",
+            "other"
           ]
         },
         "frequency": {
@@ -302,7 +186,9 @@
         "contexts": {
           "type": "array",
           "description": "Example usages from the corpus",
-          "items": { "$ref": "#/$defs/Context" },
+          "items": {
+            "$ref": "#/$defs/Context"
+          },
           "minItems": 1
         },
         "first_seen": {
@@ -313,7 +199,9 @@
         "collocations": {
           "type": "array",
           "description": "Frequently co-occurring words",
-          "items": { "$ref": "#/$defs/Collocation" }
+          "items": {
+            "$ref": "#/$defs/Collocation"
+          }
         },
         "extensions": {
           "type": "object",
@@ -350,7 +238,9 @@
         "featuring": {
           "type": "array",
           "description": "Featured artists on this track",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "timestamp": {
           "type": "string",
@@ -382,6 +272,135 @@
           "enum": ["before", "after", "either"]
         }
       }
+    },
+    "Bar": {
+      "type": "object",
+      "description": "A lyric bar entry with source, metrics, and semantic analysis",
+      "required": ["text", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The lyric bar text",
+          "minLength": 1
+        },
+        "source": {
+          "$ref": "#/$defs/BarSource"
+        },
+        "metrics": {
+          "$ref": "#/$defs/BarMetrics"
+        },
+        "semantics": {
+          "$ref": "#/$defs/BarSemantics"
+        },
+        "language": {
+          "type": "string",
+          "description": "ISO 639-1 language code for this bar",
+          "pattern": "^[a-z]{2}$"
+        }
+      }
+    },
+    "BarSource": {
+      "type": "object",
+      "description": "Source information for a bar",
+      "required": ["track"],
+      "additionalProperties": false,
+      "properties": {
+        "track": {
+          "type": "string",
+          "description": "Track/song title",
+          "minLength": 1
+        },
+        "album": {
+          "type": "string",
+          "description": "Album name"
+        },
+        "year": {
+          "type": "integer",
+          "description": "Release year",
+          "minimum": 1,
+          "maximum": 2200
+        },
+        "featuring": {
+          "type": "array",
+          "description": "Featured artists on this track",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp in track (MM:SS format)",
+          "pattern": "^[0-9]{1,2}:[0-9]{2}$"
+        }
+      }
+    },
+    "BarMetrics": {
+      "type": "object",
+      "description": "Quantitative metrics for a bar",
+      "additionalProperties": false,
+      "properties": {
+        "syllable_count": {
+          "type": "integer",
+          "description": "Number of syllables",
+          "minimum": 1
+        },
+        "word_count": {
+          "type": "integer",
+          "description": "Number of words",
+          "minimum": 1
+        },
+        "rhyme_density": {
+          "type": "number",
+          "description": "Rhyme density score (0.0 to 1.0)",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "BarSemantics": {
+      "type": "object",
+      "description": "Semantic analysis of a bar",
+      "additionalProperties": false,
+      "properties": {
+        "mood": {
+          "$ref": "#/$defs/Mood"
+        },
+        "themes": {
+          "type": "array",
+          "description": "Thematic tags",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "techniques": {
+          "type": "array",
+          "description": "Lyrical techniques used (e.g., metaphor, simile, wordplay)",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "Mood": {
+      "type": "string",
+      "description": "Mood classification",
+      "enum": [
+        "aggressive",
+        "melancholic",
+        "triumphant",
+        "reflective",
+        "humorous",
+        "romantic",
+        "defiant",
+        "hopeful",
+        "dark",
+        "celebratory"
+      ]
     }
   }
 }

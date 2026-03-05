@@ -7,7 +7,7 @@ import SchemaViewer from "@/components/explorer/SchemaViewer";
 import WordCloudViz from "@/components/explorer/WordCloudViz";
 import FrequencyChart from "@/components/explorer/FrequencyChart";
 import GrainDataTable from "@/components/explorer/GrainDataTable";
-import type { WordGrainDocument, WordDocument } from "@/lib/types";
+import type { WordGrainDocument } from "@/lib/types";
 
 type Tab = "validator" | "schema" | "visualization";
 
@@ -88,33 +88,27 @@ export default function ExplorerPage() {
                   visualize the data.
                 </p>
               </div>
-            ) : !("grains" in validatedData) ? (
-              <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center dark:border-zinc-600 dark:bg-zinc-800/50">
-                <p className="text-sm text-zinc-500">
-                  Visualization is currently available for <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs dark:bg-zinc-700">word</code> type documents only.
-                </p>
-              </div>
             ) : (
               <>
                 <section>
                   <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                     Word Cloud
                   </h2>
-                  <WordCloudViz grains={(validatedData as WordDocument).grains} />
+                  <WordCloudViz grains={validatedData.grains ?? []} />
                 </section>
 
                 <section>
                   <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                     Top Words by Frequency
                   </h2>
-                  <FrequencyChart grains={(validatedData as WordDocument).grains} />
+                  <FrequencyChart grains={validatedData.grains ?? []} />
                 </section>
 
                 <section>
                   <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                     Grain Data
                   </h2>
-                  <GrainDataTable grains={(validatedData as WordDocument).grains} />
+                  <GrainDataTable grains={validatedData.grains ?? []} />
                 </section>
               </>
             )}

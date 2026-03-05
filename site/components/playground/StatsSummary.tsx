@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import type { WordDocument, Grain } from "@/lib/types";
+import type { WordGrainDocument, Grain } from "@/lib/types";
 
 interface StatsSummaryProps {
-  left: WordDocument;
-  right: WordDocument;
+  left: WordGrainDocument;
+  right: WordGrainDocument;
 }
 
 interface SentimentCounts {
@@ -30,8 +30,8 @@ interface CommonWord {
   rightTfidf: number | undefined;
 }
 
-function computeStats(doc: WordDocument): DocumentStats {
-  const grains = doc.grains;
+function computeStats(doc: WordGrainDocument): DocumentStats {
+  const grains = doc.grains ?? [];
   const grainCount = grains.length;
 
   const withFreq = grains.filter(
@@ -66,17 +66,17 @@ function computeStats(doc: WordDocument): DocumentStats {
 }
 
 function findCommonWords(
-  left: WordDocument,
-  right: WordDocument
+  left: WordGrainDocument,
+  right: WordGrainDocument
 ): CommonWord[] {
   const rightMap = new Map<string, Grain>();
-  for (const g of right.grains) {
+  for (const g of right.grains ?? []) {
     const key = (g.normalized ?? g.word).toLowerCase();
     rightMap.set(key, g);
   }
 
   const common: CommonWord[] = [];
-  for (const g of left.grains) {
+  for (const g of left.grains ?? []) {
     const key = (g.normalized ?? g.word).toLowerCase();
     const match = rightMap.get(key);
     if (match) {

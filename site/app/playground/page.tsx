@@ -7,7 +7,7 @@ import {
   validate,
   type ValidationResult,
 } from "@/lib/validation";
-import type { WordGrainDocument, WordDocument } from "@/lib/types";
+import type { WordGrainDocument } from "@/lib/types";
 
 export default function PlaygroundPage() {
   const [schema, setSchema] = useState<Record<string, unknown> | null>(null);
@@ -18,7 +18,7 @@ export default function PlaygroundPage() {
 
   // Fetch schema on mount
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? "/word-grain"}/schema/v0.2.0/wordgrain.schema.json`)
+    fetch("/word-grain/schema/v0.2.0/wordgrain.schema.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load schema");
         return res.json();
@@ -93,10 +93,6 @@ export default function PlaygroundPage() {
   }, [rightJson, rightResult]);
 
   const bothValid = leftDoc !== null && rightDoc !== null;
-  const bothWord =
-    bothValid &&
-    "grains" in leftDoc &&
-    "grains" in rightDoc;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
@@ -121,9 +117,9 @@ export default function PlaygroundPage() {
         />
       </section>
 
-      {bothWord && (
+      {bothValid && (
         <section className="mb-10">
-          <StatsSummary left={leftDoc as WordDocument} right={rightDoc as WordDocument} />
+          <StatsSummary left={leftDoc} right={rightDoc} />
         </section>
       )}
 

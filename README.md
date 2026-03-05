@@ -1,6 +1,6 @@
 # WordGrain Specification
 
-A JSON format for storing vocabulary and lyrical structure data extracted from musical lyrics. Originally developed for hip-hop lyric analysis.
+A JSON format for storing vocabulary data and lyric bar analysis extracted from musical lyrics. Originally developed for hip-hop lyric analysis.
 
 ## Documentation
 
@@ -8,23 +8,24 @@ Full documentation is available at: https://shimpeiws.github.io/word-grain/
 
 ## Overview
 
-WordGrain provides a standardized way to represent linguistic analysis of musical lyrics at multiple granularity levels:
+WordGrain provides a standardized way to represent linguistic analysis of musical lyrics, including:
 
-| Type | Granularity | Description |
-|------|-------------|-------------|
-| `word` | Morpheme/token | Vocabulary entries with frequency, TF-IDF, sentiment, and contextual data |
-| `bar` | Phrase/line | 1-2 line lyrical units with source, metrics, and mood |
-| `verse` | Full verse | Complete verse sections (coming soon) |
+- Vocabulary with frequency and TF-IDF scores (grains)
+- Lyric bar analysis with metrics and semantics (bars)
+- Part of speech and sentiment analysis
+- Contextual examples from actual lyrics
+- Collocation and usage patterns
+
+A single `.wg.json` file can contain `grains`, `bars`, or both.
 
 ## Quick Start
 
-### Word Type (v0.1.0 compatible)
+### Grains Example
 
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
   "schema_version": "0.2.0",
-  "type": "word",
   "meta": {
     "source": "genius",
     "artist": "Kendrick Lamar",
@@ -40,29 +41,25 @@ WordGrain provides a standardized way to represent linguistic analysis of musica
 }
 ```
 
-### Bar Type (new in v0.2.0)
+### Bars Example
 
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
   "schema_version": "0.2.0",
-  "type": "bar",
-  "text": "俺はまだ関係ねえ 関係ねえ 関係ねえ",
-  "source": {
+  "meta": {
+    "source": "manual",
     "artist": "KOHH",
-    "track": "貧乏なんて気にしない",
-    "album": "YELLOW T△PE 3",
-    "year": 2016
+    "generated_at": "2026-03-06T00:00:00Z",
+    "language": "ja"
   },
-  "metrics": {
-    "lines": 1,
-    "syllables": 18,
-    "mora": 20
-  },
-  "semantics": {
-    "mood": "defiant"
-  },
-  "language": "ja"
+  "bars": [
+    {
+      "text": "結局俺は俺 お前はお前",
+      "source": { "track": "貧乏なんて気にしない", "album": "MONEYFLOWER", "year": 2017 },
+      "semantics": { "mood": "defiant", "themes": ["identity"] }
+    }
+  ]
 }
 ```
 
@@ -84,22 +81,23 @@ See [spec/WG-RFC-001.md](spec/WG-RFC-001.md) for the full specification.
 
 - Extension: `.wg.json`
 - Encoding: UTF-8
-- Naming: `{artist-slug}.wg.json` (word type), `{artist-slug}-bar.wg.json` (bar type)
+- Naming: `{artist-slug}.wg.json`
 
 ## Examples
 
-| File | Type | Description |
-|------|------|-------------|
-| [examples/minimal.wg.json](examples/minimal.wg.json) | word | Minimal valid document |
-| [examples/kendrick-lamar.wg.json](examples/kendrick-lamar.wg.json) | word | Full-featured word example |
-| [examples/kohh-bar.wg.json](examples/kohh-bar.wg.json) | bar | Bar type example (Japanese) |
+| File | Description |
+|------|-------------|
+| [examples/minimal.wg.json](examples/minimal.wg.json) | Minimal valid document |
+| [examples/kendrick-lamar.wg.json](examples/kendrick-lamar.wg.json) | Full-featured grains example |
+| [examples/kohh-bar.wg.json](examples/kohh-bar.wg.json) | Bars-only example |
+| [examples/mixed.wg.json](examples/mixed.wg.json) | Mixed grains + bars document |
 
 ## Schema
 
 The JSON Schema is available at:
 
-- **v0.2.0** (latest): [schema/v0.2.0/wordgrain.schema.json](schema/v0.2.0/wordgrain.schema.json) / [Remote](https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json)
-- v0.1.0: [schema/v0.1.0/wordgrain.schema.json](schema/v0.1.0/wordgrain.schema.json) / [Remote](https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json)
+- Local: [schema/v0.2.0/wordgrain.schema.json](schema/v0.2.0/wordgrain.schema.json)
+- Remote: `https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json`
 
 ## License
 

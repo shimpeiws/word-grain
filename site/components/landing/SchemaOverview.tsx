@@ -1,21 +1,7 @@
-"use client";
-
-import { useState } from "react";
-
 const MAIN_COL = 300;
 const SUB_COL = 200;
 
-type TabKey = "word" | "bar" | "verse";
-
-const TABS: { key: TabKey; label: string }[] = [
-  { key: "word", label: "word" },
-  { key: "bar", label: "bar" },
-  { key: "verse", label: "verse" },
-];
-
 export default function SchemaOverview() {
-  const [activeTab, setActiveTab] = useState<TabKey>("word");
-
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
       <div className="text-center">
@@ -23,42 +9,258 @@ export default function SchemaOverview() {
           Document Structure
         </h2>
         <p className="mt-3 text-base text-zinc-500 dark:text-zinc-400">
-          WordGrain supports three granularity levels. Each document declares its{" "}
-          <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-sm font-mono dark:bg-zinc-800">
-            type
-          </code>{" "}
-          to determine its structure.
+          A WordGrain document is a JSON file with a simple, well-defined
+          hierarchy.
         </p>
       </div>
 
-      {/* Type tabs */}
-      <div className="mt-8 flex justify-center">
-        <div className="inline-flex rounded-lg border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700 dark:bg-zinc-800/50">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setActiveTab(tab.key)}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === tab.key
-                  ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100"
-                  : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
-              }`}
+      {/* Desktop Tree */}
+      <div className="mt-12 hidden justify-center overflow-x-auto sm:flex">
+        <div className="flex flex-col items-center">
+          <TreeNode
+            label="Document"
+            type="object"
+            accent
+            fields={["$schema", "schema_version", "meta", "grains[]?", "bars[]?"]}
+          />
+
+          <TreeConnector cols={3} colWidth={MAIN_COL} />
+
+          <div className="flex" style={{ width: MAIN_COL * 3 }}>
+            {/* meta column */}
+            <div
+              style={{ width: MAIN_COL }}
+              className="flex flex-col items-center"
             >
-              {tab.label}
-            </button>
-          ))}
+              <TreeNode
+                label="meta"
+                type="object"
+                fields={[
+                  "source: string",
+                  "artist: string",
+                  "corpus_size: integer",
+                  "total_words: integer",
+                  "generated_at: date-time",
+                  "generator: string",
+                  "language: string",
+                  "description: string",
+                ]}
+              />
+            </div>
+
+            {/* grains column */}
+            <div
+              style={{ width: MAIN_COL }}
+              className="flex flex-col items-center"
+            >
+              <TreeNode
+                label="grains[]"
+                type="array"
+                fields={[
+                  "word: string *",
+                  "normalized: string",
+                  "pos: enum",
+                  "frequency: integer",
+                  "tfidf: number",
+                  "sentiment: enum",
+                  "categories: string[]",
+                  "contexts: Context[]",
+                  "collocations: Collocation[]",
+                ]}
+              />
+
+              <TreeConnector cols={2} colWidth={SUB_COL} />
+
+              <div className="flex" style={{ width: SUB_COL * 2 }}>
+                <div
+                  style={{ width: SUB_COL }}
+                  className="flex flex-col items-center"
+                >
+                  <TreeNode
+                    label="Context"
+                    type="object"
+                    small
+                    fields={[
+                      "line: string *",
+                      "track: string",
+                      "album: string",
+                      "year: integer",
+                    ]}
+                  />
+                </div>
+                <div
+                  style={{ width: SUB_COL }}
+                  className="flex flex-col items-center"
+                >
+                  <TreeNode
+                    label="Collocation"
+                    type="object"
+                    small
+                    fields={[
+                      "word: string *",
+                      "score: number *",
+                      "position: enum",
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* bars column */}
+            <div
+              style={{ width: MAIN_COL }}
+              className="flex flex-col items-center"
+            >
+              <TreeNode
+                label="bars[]"
+                type="array"
+                fields={[
+                  "text: string *",
+                  "source: BarSource *",
+                  "metrics: BarMetrics",
+                  "semantics: BarSemantics",
+                  "language: string",
+                ]}
+              />
+
+              <TreeConnector cols={2} colWidth={SUB_COL} />
+
+              <div className="flex" style={{ width: SUB_COL * 2 }}>
+                <div
+                  style={{ width: SUB_COL }}
+                  className="flex flex-col items-center"
+                >
+                  <TreeNode
+                    label="BarSource"
+                    type="object"
+                    small
+                    fields={[
+                      "track: string *",
+                      "album: string",
+                      "year: integer",
+                    ]}
+                  />
+                </div>
+                <div
+                  style={{ width: SUB_COL }}
+                  className="flex flex-col items-center"
+                >
+                  <TreeNode
+                    label="BarSemantics"
+                    type="object"
+                    small
+                    fields={[
+                      "mood: enum",
+                      "themes: string[]",
+                      "techniques: string[]",
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Word tree */}
-      {activeTab === "word" && <WordTree />}
-
-      {/* Bar tree */}
-      {activeTab === "bar" && <BarTree />}
-
-      {/* Verse placeholder */}
-      {activeTab === "verse" && <VersePlaceholder />}
+      {/* Mobile Tree */}
+      <div className="mt-12 flex flex-col items-center sm:hidden">
+        <TreeNode
+          label="Document"
+          type="object"
+          accent
+          fields={["$schema", "schema_version", "meta", "grains[]?", "bars[]?"]}
+        />
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
+        <TreeNode
+          label="meta"
+          type="object"
+          fields={[
+            "source: string",
+            "artist: string",
+            "corpus_size: integer",
+            "total_words: integer",
+            "generated_at: date-time",
+            "generator: string",
+            "language: string",
+            "description: string",
+          ]}
+        />
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
+        <TreeNode
+          label="grains[]"
+          type="array"
+          fields={[
+            "word: string *",
+            "normalized: string",
+            "pos: enum",
+            "frequency: integer",
+            "tfidf: number",
+            "sentiment: enum",
+            "categories: string[]",
+            "contexts: Context[]",
+            "collocations: Collocation[]",
+          ]}
+        />
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
+        <div className="flex gap-4">
+          <TreeNode
+            label="Context"
+            type="object"
+            small
+            fields={[
+              "line: string *",
+              "track: string",
+              "album: string",
+              "year: integer",
+            ]}
+          />
+          <TreeNode
+            label="Collocation"
+            type="object"
+            small
+            fields={[
+              "word: string *",
+              "score: number *",
+              "position: enum",
+            ]}
+          />
+        </div>
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
+        <TreeNode
+          label="bars[]"
+          type="array"
+          fields={[
+            "text: string *",
+            "source: BarSource *",
+            "metrics: BarMetrics",
+            "semantics: BarSemantics",
+            "language: string",
+          ]}
+        />
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
+        <div className="flex gap-4">
+          <TreeNode
+            label="BarSource"
+            type="object"
+            small
+            fields={[
+              "track: string *",
+              "album: string",
+              "year: integer",
+            ]}
+          />
+          <TreeNode
+            label="BarSemantics"
+            type="object"
+            small
+            fields={[
+              "mood: enum",
+              "themes: string[]",
+              "techniques: string[]",
+            ]}
+          />
+        </div>
+      </div>
 
       {/* Legend */}
       <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-500 dark:text-zinc-400">
@@ -81,212 +283,14 @@ export default function SchemaOverview() {
   );
 }
 
-function WordTree() {
-  return (
-    <>
-      {/* Desktop */}
-      <div className="mt-8 hidden justify-center overflow-x-auto sm:flex">
-        <div className="flex flex-col items-center">
-          <TreeNode
-            label="Document"
-            type="object"
-            accent
-            fields={['type: "word"', "$schema", "schema_version", "meta", "grains[]"]}
-          />
-          <TreeConnector cols={2} colWidth={MAIN_COL} />
-          <div className="flex" style={{ width: MAIN_COL * 2 }}>
-            <div style={{ width: MAIN_COL }} className="flex flex-col items-center">
-              <TreeNode
-                label="meta"
-                type="object"
-                fields={[
-                  "source: string *",
-                  "artist: string *",
-                  "generated_at: date-time *",
-                  "corpus_size: integer",
-                  "total_words: integer",
-                  "language: string",
-                ]}
-              />
-            </div>
-            <div style={{ width: MAIN_COL }} className="flex flex-col items-center">
-              <TreeNode
-                label="grains[]"
-                type="array"
-                fields={[
-                  "word: string *",
-                  "normalized: string",
-                  "pos: enum",
-                  "frequency: integer",
-                  "tfidf: number",
-                  "sentiment: enum",
-                  "categories: string[]",
-                  "contexts: Context[]",
-                  "collocations: Collocation[]",
-                ]}
-              />
-              <TreeConnector cols={2} colWidth={SUB_COL} />
-              <div className="flex" style={{ width: SUB_COL * 2 }}>
-                <div style={{ width: SUB_COL }} className="flex flex-col items-center">
-                  <TreeNode
-                    label="Context"
-                    type="object"
-                    small
-                    fields={["line: string *", "track: string", "album: string", "year: integer"]}
-                  />
-                </div>
-                <div style={{ width: SUB_COL }} className="flex flex-col items-center">
-                  <TreeNode
-                    label="Collocation"
-                    type="object"
-                    small
-                    fields={["word: string *", "score: number *", "position: enum"]}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Mobile */}
-      <div className="mt-8 flex flex-col items-center sm:hidden">
-        <TreeNode
-          label="Document"
-          type="object"
-          accent
-          fields={['type: "word"', "$schema", "schema_version", "meta", "grains[]"]}
-        />
-        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
-        <TreeNode
-          label="meta"
-          type="object"
-          fields={["source *", "artist *", "generated_at *", "corpus_size", "total_words", "language"]}
-        />
-        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
-        <TreeNode
-          label="grains[]"
-          type="array"
-          fields={["word *", "pos", "frequency", "tfidf", "sentiment", "contexts[]"]}
-        />
-      </div>
-    </>
-  );
-}
-
-function BarTree() {
-  return (
-    <>
-      {/* Desktop */}
-      <div className="mt-8 hidden justify-center overflow-x-auto sm:flex">
-        <div className="flex flex-col items-center">
-          <TreeNode
-            label="Document"
-            type="object"
-            accent
-            fields={[
-              'type: "bar"',
-              "$schema",
-              "schema_version",
-              "text: string *",
-              "source *",
-              "metrics",
-              "semantics",
-              "language: string",
-            ]}
-          />
-          <TreeConnector cols={3} colWidth={240} />
-          <div className="flex" style={{ width: 240 * 3 }}>
-            <div style={{ width: 240 }} className="flex flex-col items-center">
-              <TreeNode
-                label="source"
-                type="object"
-                fields={[
-                  "artist: string *",
-                  "track: string *",
-                  "album: string",
-                  "year: integer",
-                  "featuring: string[]",
-                ]}
-              />
-            </div>
-            <div style={{ width: 240 }} className="flex flex-col items-center">
-              <TreeNode
-                label="metrics"
-                type="object"
-                fields={[
-                  "lines: integer",
-                  "syllables: integer",
-                  "mora: integer | null",
-                ]}
-              />
-            </div>
-            <div style={{ width: 240 }} className="flex flex-col items-center">
-              <TreeNode
-                label="semantics"
-                type="object"
-                fields={["mood: enum"]}
-              />
-              <div className="mt-3 rounded border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-mono text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-400">
-                <div className="mb-1 text-[10px] font-sans font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">mood values</div>
-                cold, defiant, melancholic,
-                <br />
-                aggressive, introspective,
-                <br />
-                celebratory, tender, weary
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Mobile */}
-      <div className="mt-8 flex flex-col items-center sm:hidden">
-        <TreeNode
-          label="Document"
-          type="object"
-          accent
-          fields={['type: "bar"', "text *", "source *", "metrics", "semantics", "language"]}
-        />
-        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
-        <TreeNode
-          label="source"
-          type="object"
-          fields={["artist *", "track *", "album", "year"]}
-        />
-        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
-        <div className="flex gap-4">
-          <TreeNode
-            label="metrics"
-            type="object"
-            small
-            fields={["lines", "syllables", "mora"]}
-          />
-          <TreeNode
-            label="semantics"
-            type="object"
-            small
-            fields={["mood: enum"]}
-          />
-        </div>
-      </div>
-    </>
-  );
-}
-
-function VersePlaceholder() {
-  return (
-    <div className="mt-8 flex justify-center">
-      <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/50 px-12 py-10 text-center dark:border-zinc-700 dark:bg-zinc-800/30">
-        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-          The <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono dark:bg-zinc-800">verse</code> type is reserved for future specification.
-        </p>
-        <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500">
-          Detailed schema will be defined in a subsequent version.
-        </p>
-      </div>
-    </div>
-  );
-}
-
+/**
+ * SVG connector that draws a T-shaped branch from a parent node
+ * to `cols` child nodes arranged in equal-width columns.
+ *
+ *        |           ← vertical stem (from parent center)
+ *    ────┼────       ← horizontal bar
+ *    |       |       ← vertical drops (to each child center)
+ */
 function TreeConnector({
   cols,
   colWidth,
@@ -307,10 +311,35 @@ function TreeConnector({
         className="block text-zinc-300 dark:text-zinc-600"
         style={{ overflow: "visible" }}
       >
-        <line x1={barWidth / 2} y1={0} x2={barWidth / 2} y2={mid} stroke="currentColor" strokeWidth={1} />
-        <line x1={0} y1={mid} x2={barWidth} y2={mid} stroke="currentColor" strokeWidth={1} />
+        {/* Vertical stem from parent center */}
+        <line
+          x1={barWidth / 2}
+          y1={0}
+          x2={barWidth / 2}
+          y2={mid}
+          stroke="currentColor"
+          strokeWidth={1}
+        />
+        {/* Horizontal bar */}
+        <line
+          x1={0}
+          y1={mid}
+          x2={barWidth}
+          y2={mid}
+          stroke="currentColor"
+          strokeWidth={1}
+        />
+        {/* Vertical drops to children */}
         {Array.from({ length: cols }, (_, i) => (
-          <line key={i} x1={i * colWidth} y1={mid} x2={i * colWidth} y2={h} stroke="currentColor" strokeWidth={1} />
+          <line
+            key={i}
+            x1={i * colWidth}
+            y1={mid}
+            x2={i * colWidth}
+            y2={h}
+            stroke="currentColor"
+            strokeWidth={1}
+          />
         ))}
       </svg>
     </div>

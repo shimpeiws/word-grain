@@ -4,34 +4,28 @@ import FeatureCards from "@/components/landing/FeatureCards";
 import EcosystemSection from "@/components/landing/EcosystemSection";
 
 const EXAMPLE_JSON = `{
-  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.1.0/wordgrain.schema.json",
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
+  "schema_version": "0.2.0",
   "meta": {
     "source": "genius",
     "artist": "Kendrick Lamar",
-    "corpus_size": 142,
-    "total_words": 89420,
     "generated_at": "2026-02-08T12:00:00Z",
-    "generator": "wordgrain-cli/0.1.0",
-    "language": "en",
-    "description": "Vocabulary analysis of Kendrick Lamar's studio albums (2011-2024)"
+    "language": "en"
   },
   "grains": [
     {
       "word": "hustle",
-      "normalized": "hustle",
-      "pos": "noun",
       "frequency": 47,
       "tfidf": 0.82,
       "sentiment": "positive",
-      "categories": ["work", "struggle", "ambition"],
-      "contexts": [
-        {
-          "line": "The hustle never sleeps, I grind until the sun comes up",
-          "track": "Money Trees",
-          "album": "good kid, m.A.A.d city",
-          "year": 2012
-        }
-      ]
+      "categories": ["work", "struggle", "ambition"]
+    }
+  ],
+  "bars": [
+    {
+      "text": "I got hustle though, ambition flow inside my DNA",
+      "source": { "track": "DNA.", "album": "DAMN.", "year": 2017 },
+      "semantics": { "mood": "aggressive", "themes": ["ambition"] }
     }
   ]
 }`;

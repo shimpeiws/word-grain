@@ -6,13 +6,14 @@
 | Title | WordGrain JSON Format Specification |
 | Status | Draft |
 | Created | 2026-02-08 |
+| Updated | 2026-03-06 |
 | Author | Shin Takamatsu |
 
 ---
 
 ## Abstract
 
-WordGrain is a standardized JSON format for representing vocabulary and lyrical structure data extracted from musical lyrics and other text sources. This specification defines the structure, fields, and validation rules for WordGrain documents at three granularity levels: word (morpheme), bar (phrase/line), and verse (full verse).
+WordGrain is a standardized JSON format for representing vocabulary data and lyric bar analysis extracted from musical lyrics and other text sources. This specification defines the structure, fields, and validation rules for WordGrain documents.
 
 ---
 
@@ -21,16 +22,15 @@ WordGrain is a standardized JSON format for representing vocabulary and lyrical 
 1. [Motivation](#1-motivation)
 2. [Terminology](#2-terminology)
 3. [Specification](#3-specification)
-4. [Type Hierarchy](#4-type-hierarchy)
+4. [Content Sections](#4-content-sections)
 5. [File Conventions](#5-file-conventions)
 6. [Versioning](#6-versioning)
 7. [MIME Type](#7-mime-type)
 8. [Examples](#8-examples)
 9. [Validation](#9-validation)
 10. [Security Considerations](#10-security-considerations)
-11. [Design Decisions](#11-design-decisions)
-12. [Future Extensions](#12-future-extensions)
-13. [References](#13-references)
+11. [Future Extensions](#11-future-extensions)
+12. [References](#12-references)
 
 ---
 
@@ -44,6 +44,7 @@ Musical lyrics represent a rich linguistic corpus with unique vocabulary, slang 
 - Archiving linguistic patterns in musical lyrics
 - Building educational and research applications
 - Creating interoperable lyric analysis pipelines
+- Storing structured bar-level lyric analysis
 
 ### 1.2 Goals
 
@@ -52,6 +53,7 @@ Musical lyrics represent a rich linguistic corpus with unique vocabulary, slang 
 3. **Extensibility**: Allow future additions without breaking changes
 4. **Simplicity**: Keep the core format minimal and human-readable
 5. **Validation**: Provide machine-verifiable schema
+6. **Unified Format**: Support multiple content types (grains, bars) in a single document
 
 ### 1.3 Non-Goals
 
@@ -68,12 +70,10 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 | Term | Definition |
 |------|------------|
 | Grain | A single vocabulary entry with associated metadata |
-| Bar | A phrase or 1-2 line unit of lyrics, named after the musical term for a measure |
-| Verse | A full verse section of a song |
+| Bar | A lyric line or phrase with source, metrics, and semantic analysis |
 | Corpus | The collection of lyrics analyzed to produce grains |
 | Context | A specific usage instance of a word in lyrics |
 | TF-IDF | Term Frequency-Inverse Document Frequency score |
-| Mood | The dominant emotional tone of a bar |
 
 ---
 
@@ -81,32 +81,27 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ### 3.1 Document Structure
 
-A WordGrain document is a JSON object whose structure is determined by the `type` field. All document types share these common top-level properties:
-
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `$schema` | string (URI) | REQUIRED | Schema version URI |
-| `schema_version` | string | REQUIRED | Semver version string (e.g., `"0.2.0"`) |
-| `type` | string | REQUIRED | Document type: `"word"`, `"bar"`, or `"verse"` |
-
-The remaining properties depend on the `type` value. See [Section 4: Type Hierarchy](#4-type-hierarchy) for details.
-
-#### 3.1.1 Word Document (v0.1.0 compatible)
+A WordGrain document is a unified JSON object that can contain vocabulary grains, lyric bars, or both. At least one of `grains` or `bars` MUST be present.
 
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
   "schema_version": "0.2.0",
-  "type": "word",
   "meta": { ... },
-  "grains": [ ... ]
+  "grains": [ ... ],
+  "bars": [ ... ]
 }
 ```
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
+| `$schema` | string (URI) | REQUIRED | Schema version URI |
+| `schema_version` | string | REQUIRED | Schema version identifier (e.g., "0.2.0") |
 | `meta` | object | REQUIRED | Document metadata |
-| `grains` | array | REQUIRED | Array of grain objects |
+| `grains` | array | OPTIONAL* | Array of grain objects |
+| `bars` | array | OPTIONAL* | Array of bar objects |
+
+\* At least one of `grains` or `bars` MUST be present.
 
 ### 3.2 Meta Object
 
@@ -214,102 +209,58 @@ Extension keys SHOULD be prefixed with `x-` to indicate non-standard fields.
 
 ---
 
-## 4. Type Hierarchy
+## 4. Content Sections
 
-### 4.1 Overview
+A WordGrain document supports two content sections: **grains** for vocabulary analysis and **bars** for lyric-level analysis. At least one section MUST be present; both MAY coexist in a single document.
 
-WordGrain v0.2.0 introduces a three-level type hierarchy for representing lyrical data at different granularities:
+### 4.1 Grains Section
 
-| Type | Granularity | Description |
-|------|-------------|-------------|
-| `word` | Morpheme/token | Individual vocabulary entries with linguistic metadata. Compatible with v0.1.0. |
-| `bar` | Phrase/line (1-2 lines) | A short lyrical unit, typically a measure in musical terms. |
-| `verse` | Full verse | A complete verse section. Reserved for future specification. |
+The `grains` array contains vocabulary entries with linguistic and statistical data. See Section 3.3 for the Grain object structure.
 
-The `type` field acts as a discriminator: each type has its own set of required and optional properties.
+### 4.2 Bars Section
 
-### 4.2 Bar Type
+The `bars` array contains lyric bar entries. Each bar is an individual lyric line or phrase with associated metadata.
 
-A `bar` document represents a phrase-level lyrical unit (1-2 lines). This is the primary new type in v0.2.0.
-
-#### 4.2.1 Bar Document Structure
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
-  "schema_version": "0.2.0",
-  "type": "bar",
-  "text": "俺はまだ関係ねえ 関係ねえ 関係ねえ",
-  "source": {
-    "artist": "KOHH",
-    "track": "貧乏なんて気にしない",
-    "album": "YELLOW T△PE 3",
-    "year": 2016
-  },
-  "metrics": {
-    "lines": 1,
-    "syllables": 18,
-    "mora": 20
-  },
-  "semantics": {
-    "mood": "defiant"
-  },
-  "language": "ja"
-}
-```
-
-#### 4.2.2 Bar Fields
+#### 4.2.1 Bar Object
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `text` | string | REQUIRED | The lyric text of the bar (1-2 lines) |
-| `source` | object | REQUIRED | Source attribution (see 4.2.3) |
-| `metrics` | object | OPTIONAL | Quantitative metrics (see 4.2.4) |
-| `semantics` | object | OPTIONAL | Semantic attributes (see 4.2.5) |
-| `language` | string | OPTIONAL | ISO 639-1 language code (default: `"en"`) |
+| `text` | string | REQUIRED | The lyric bar text |
+| `source` | BarSource | REQUIRED | Source information (track, album, year) |
+| `metrics` | BarMetrics | OPTIONAL | Quantitative metrics |
+| `semantics` | BarSemantics | OPTIONAL | Semantic analysis |
+| `language` | string | OPTIONAL | ISO 639-1 language code for this bar |
 
-#### 4.2.3 Source Object
+#### 4.2.2 BarSource Object
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `artist` | string | REQUIRED | Artist name |
 | `track` | string | REQUIRED | Track/song title |
 | `album` | string | OPTIONAL | Album name |
 | `year` | integer | OPTIONAL | Release year (1-2200) |
 | `featuring` | string[] | OPTIONAL | Featured artists |
+| `timestamp` | string | OPTIONAL | MM:SS format |
 
-#### 4.2.4 Metrics Object
+#### 4.2.3 BarMetrics Object
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `lines` | integer | Number of lines in the bar (>= 1) |
-| `syllables` | integer | Total syllable count (>= 0) |
-| `mora` | integer or null | Mora count for mora-timed languages (e.g., Japanese). Null if not applicable. |
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `syllable_count` | integer | OPTIONAL | Number of syllables |
+| `word_count` | integer | OPTIONAL | Number of words |
+| `rhyme_density` | number | OPTIONAL | Rhyme density score (0.0-1.0) |
 
-#### 4.2.5 Semantics Object
+#### 4.2.4 BarSemantics Object
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `mood` | string | The dominant mood/emotional tone (see 4.2.6) |
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `mood` | Mood | OPTIONAL | Mood classification |
+| `themes` | string[] | OPTIONAL | Thematic tags |
+| `techniques` | string[] | OPTIONAL | Lyrical techniques used |
 
-#### 4.2.6 Mood Enum
+#### 4.2.5 Mood Enum Values
 
-The `mood` field captures the dominant emotional tone of a bar. It uses a curated set of 8 values chosen to represent the emotional spectrum commonly found in hip-hop and related genres:
-
-| Value | Description |
-|-------|-------------|
-| `cold` | Cool, detached, controlled menace |
-| `defiant` | Rebellious, resistant, confrontational |
-| `melancholic` | Sad, reflective, sorrowful |
-| `aggressive` | Hostile, intense, hard-hitting |
-| `introspective` | Self-examining, thoughtful, philosophical |
-| `celebratory` | Triumphant, joyful, boastful |
-| `tender` | Gentle, vulnerable, affectionate |
-| `weary` | Tired, worn, resigned |
-
-### 4.3 Verse Type
-
-The `verse` type is reserved for representing full verse sections. Its detailed schema will be defined in a future version. Currently, `verse` documents require only the common top-level fields (`$schema`, `schema_version`, `type`) and allow additional properties.
+- `aggressive`, `melancholic`, `triumphant`, `reflective`, `humorous`
+- `romantic`, `defiant`, `hopeful`, `dark`, `celebratory`
 
 ---
 
@@ -350,6 +301,8 @@ The `$schema` field indicates the specification version:
 https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v{MAJOR}.{MINOR}.{PATCH}/wordgrain.schema.json
 ```
 
+The `schema_version` field MUST contain the version string (e.g., `"0.2.0"`).
+
 ### 6.2 Semantic Versioning Rules
 
 | Change Type | Version Bump | Example |
@@ -375,13 +328,12 @@ Until registered, use: `application/json`
 
 ## 8. Examples
 
-### 8.1 Minimal Valid Document (Word Type)
+### 8.1 Minimal Valid Document (Grains only)
 
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
   "schema_version": "0.2.0",
-  "type": "word",
   "meta": {
     "source": "manual",
     "artist": "Example Artist",
@@ -391,35 +343,55 @@ Until registered, use: `application/json`
 }
 ```
 
-### 8.2 Bar Type Example
+### 8.2 Bars Only Document
 
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
   "schema_version": "0.2.0",
-  "type": "bar",
-  "text": "俺はまだ関係ねえ 関係ねえ 関係ねえ",
-  "source": {
+  "meta": {
+    "source": "manual",
     "artist": "KOHH",
-    "track": "貧乏なんて気にしない",
-    "album": "YELLOW T△PE 3",
-    "year": 2016
+    "generated_at": "2026-03-06T00:00:00Z",
+    "language": "ja"
   },
-  "metrics": {
-    "lines": 1,
-    "syllables": 18,
-    "mora": 20
-  },
-  "semantics": {
-    "mood": "defiant"
-  },
-  "language": "ja"
+  "bars": [
+    {
+      "text": "結局俺は俺 お前はお前",
+      "source": { "track": "貧乏なんて気にしない", "album": "MONEYFLOWER", "year": 2017 },
+      "semantics": { "mood": "defiant", "themes": ["identity"] }
+    }
+  ]
 }
 ```
 
-### 8.3 Complete Word Example
+### 8.3 Mixed Document (Grains + Bars)
 
-See [examples/kendrick-lamar.wg.json](../examples/kendrick-lamar.wg.json) for a full-featured word-type example.
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
+  "schema_version": "0.2.0",
+  "meta": {
+    "source": "manual",
+    "artist": "Kendrick Lamar",
+    "generated_at": "2026-03-06T00:00:00Z"
+  },
+  "grains": [
+    { "word": "hustle", "frequency": 47, "tfidf": 0.82 }
+  ],
+  "bars": [
+    {
+      "text": "I got hustle though, ambition flow inside my DNA",
+      "source": { "track": "DNA.", "album": "DAMN.", "year": 2017 },
+      "semantics": { "mood": "aggressive", "themes": ["ambition"] }
+    }
+  ]
+}
+```
+
+### 8.4 Complete Example
+
+See [examples/kendrick-lamar.wg.json](../examples/kendrick-lamar.wg.json) for a full-featured example.
 
 ---
 
@@ -436,8 +408,9 @@ The official JSON Schema is available at:
 
 1. Document MUST be valid JSON
 2. Document MUST validate against the JSON Schema
-3. `generated_at` MUST be a valid ISO 8601 datetime
-4. `tfidf` and `sentiment_score` MUST be within specified ranges
+3. Document MUST contain at least one of `grains` or `bars`
+4. `generated_at` MUST be a valid ISO 8601 datetime
+5. `tfidf` and `sentiment_score` MUST be within specified ranges
 
 ### 9.3 Validation Commands
 
@@ -455,7 +428,7 @@ python -m jsonschema -i your-file.wg.json schema/v0.2.0/wordgrain.schema.json
 
 ### 10.1 Copyright
 
-- Context lines SHOULD be limited excerpts (fair use)
+- Context lines and bar text SHOULD be limited excerpts (fair use)
 - Full lyrics MUST NOT be stored
 - Attribution to original artists is RECOMMENDED
 
@@ -466,44 +439,18 @@ python -m jsonschema -i your-file.wg.json schema/v0.2.0/wordgrain.schema.json
 
 ---
 
-## 11. Design Decisions
+## 11. Future Extensions
 
-This section records key design decisions made in v0.2.0 and their rationale.
-
-### 11.1 "bar" over "phrase"
-
-The term **bar** was chosen over "phrase" for the line-level type. In music, a "bar" (or measure) is a natural unit of rhythmic structure. Since WordGrain is designed for lyric analysis in hip-hop and related genres, the musical terminology is more intuitive and idiomatic for the target audience. "Phrase" is a more generic linguistic term that lacks this musical connotation.
-
-### 11.2 No `vector` / `embedding` field
-
-Embedding vectors were considered for v0.2.0 but ultimately excluded. Reasons:
-
-- **Size**: Embedding vectors (e.g., 384 or 768 dimensions) would dramatically increase file size, conflicting with the goal of human-readable, lightweight JSON files.
-- **Volatility**: Embedding models evolve rapidly; baking a specific model's output into the schema would create tight coupling.
-- **Scope**: Embeddings are better served by dedicated vector stores or the `extensions` field for experimental use.
-
-### 11.3 Simplified `semantics` (no `intensity`, no `tags`)
-
-Earlier drafts included `intensity` (a numeric scale) and `tags` (free-form string array) in the `semantics` object. These were removed:
-
-- **`intensity`**: Subjective and difficult to calibrate consistently across annotators. The `mood` enum alone provides sufficient signal.
-- **`tags`**: Too open-ended, leading to inconsistent and noisy data. Structured fields (like `mood`) are preferred for interoperability.
-
-The `semantics` object now contains only `mood`, keeping it focused and reliable.
-
----
-
-## 12. Future Extensions
-
-### 12.1 Planned for v0.3.0+
+### 11.1 Planned
 
 | Feature | Description |
 |---------|-------------|
-| `verse` type detail | Full schema for verse-level documents |
+| `verse` content type | Structured verse-level analysis |
+| `embedding` | Word embedding vectors |
 | `phonetics` | IPA pronunciation, rhyme patterns |
 | `audio_link` | Reference to audio timestamps |
 
-### 12.2 Planned for v1.0.0
+### 11.2 Planned for v1.0.0
 
 | Feature | Description |
 |---------|-------------|
@@ -511,9 +458,9 @@ The `semantics` object now contains only `mood`, keeping it focused and reliable
 | Binary format | Efficient storage for embeddings |
 | Multi-language | Full i18n support |
 
-### 12.3 Extension Mechanism
+### 11.3 Extension Mechanism
 
-Custom fields can be added via the `extensions` object in word-type documents:
+Custom fields can be added via the `extensions` object:
 
 ```json
 {
@@ -527,7 +474,7 @@ Custom fields can be added via the `extensions` object in word-type documents:
 
 ---
 
-## 13. References
+## 12. References
 
 - [RFC 2119](https://tools.ietf.org/html/rfc2119) - Key words
 - [JSON Schema](https://json-schema.org/) - Validation
@@ -540,5 +487,5 @@ Custom fields can be added via the `extensions` object in word-type documents:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v0.2.0 | 2026-03-05 | Add type hierarchy (word/bar/verse), bar type with source/metrics/semantics, mood enum, schema_version field, design decisions section |
 | v0.1.0 | 2026-02-08 | Initial draft |
+| v0.2.0 | 2026-03-06 | Unified document format: added `bars` section, `schema_version` field; `grains` and `bars` are both optional but at least one required |

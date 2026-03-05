@@ -99,7 +99,7 @@ export default function SpecPage() {
       try {
         const [mdRes, schemaRes] = await Promise.all([
           fetch(`${BASE_PATH}/spec/WG-RFC-001.md`),
-          fetch(`${BASE_PATH}/schema/v0.1.0/wordgrain.schema.json`),
+          fetch(`${BASE_PATH}/schema/v0.2.0/wordgrain.schema.json`),
         ]);
 
         if (!mdRes.ok) throw new Error(`Failed to load spec: ${mdRes.status}`);

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
+  "schema_version": "0.2.0",
+  "meta": {
+    "source": "manual",
+    "artist": "KOHH",
+    "generated_at": "2026-03-06T00:00:00Z",
+    "language": "ja",
+    "description": "Selected bars from KOHH's discography"
+  },
+  "bars": [
+    {
+      "text": "結局俺は俺 お前はお前",
+      "source": {
+        "track": "貧乏なんて気にしない",
+        "album": "MONEYFLOWER",
+        "year": 2017
+      },
+      "metrics": {
+        "syllable_count": 14,
+        "word_count": 6
+      },
+      "semantics": {
+        "mood": "defiant",
+        "themes": ["identity", "independence"],
+        "techniques": ["repetition"]
+      },
+      "language": "ja"
+    },
+    {
+      "text": "It ain't safe no more",
+      "source": {
+        "track": "It Ain't Safe",
+        "album": "DIRT II",
+        "year": 2018,
+        "featuring": ["Loota"]
+      },
+      "metrics": {
+        "syllable_count": 5,
+        "word_count": 5
+      },
+      "semantics": {
+        "mood": "dark",
+        "themes": ["danger", "street-life"]
+      },
+      "language": "en"
+    }
+  ]
+}

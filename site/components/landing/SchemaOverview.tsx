@@ -21,12 +21,12 @@ export default function SchemaOverview() {
             label="Document"
             type="object"
             accent
-            fields={["$schema", "meta", "grains[]"]}
+            fields={["$schema", "schema_version", "meta", "grains[]?", "bars[]?"]}
           />
 
-          <TreeConnector cols={2} colWidth={MAIN_COL} />
+          <TreeConnector cols={3} colWidth={MAIN_COL} />
 
-          <div className="flex" style={{ width: MAIN_COL * 2 }}>
+          <div className="flex" style={{ width: MAIN_COL * 3 }}>
             {/* meta column */}
             <div
               style={{ width: MAIN_COL }}
@@ -105,6 +105,59 @@ export default function SchemaOverview() {
                 </div>
               </div>
             </div>
+
+            {/* bars column */}
+            <div
+              style={{ width: MAIN_COL }}
+              className="flex flex-col items-center"
+            >
+              <TreeNode
+                label="bars[]"
+                type="array"
+                fields={[
+                  "text: string *",
+                  "source: BarSource *",
+                  "metrics: BarMetrics",
+                  "semantics: BarSemantics",
+                  "language: string",
+                ]}
+              />
+
+              <TreeConnector cols={2} colWidth={SUB_COL} />
+
+              <div className="flex" style={{ width: SUB_COL * 2 }}>
+                <div
+                  style={{ width: SUB_COL }}
+                  className="flex flex-col items-center"
+                >
+                  <TreeNode
+                    label="BarSource"
+                    type="object"
+                    small
+                    fields={[
+                      "track: string *",
+                      "album: string",
+                      "year: integer",
+                    ]}
+                  />
+                </div>
+                <div
+                  style={{ width: SUB_COL }}
+                  className="flex flex-col items-center"
+                >
+                  <TreeNode
+                    label="BarSemantics"
+                    type="object"
+                    small
+                    fields={[
+                      "mood: enum",
+                      "themes: string[]",
+                      "techniques: string[]",
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -115,7 +168,7 @@ export default function SchemaOverview() {
           label="Document"
           type="object"
           accent
-          fields={["$schema", "meta", "grains[]"]}
+          fields={["$schema", "schema_version", "meta", "grains[]?", "bars[]?"]}
         />
         <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
         <TreeNode
@@ -169,6 +222,41 @@ export default function SchemaOverview() {
               "word: string *",
               "score: number *",
               "position: enum",
+            ]}
+          />
+        </div>
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
+        <TreeNode
+          label="bars[]"
+          type="array"
+          fields={[
+            "text: string *",
+            "source: BarSource *",
+            "metrics: BarMetrics",
+            "semantics: BarSemantics",
+            "language: string",
+          ]}
+        />
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-600" />
+        <div className="flex gap-4">
+          <TreeNode
+            label="BarSource"
+            type="object"
+            small
+            fields={[
+              "track: string *",
+              "album: string",
+              "year: integer",
+            ]}
+          />
+          <TreeNode
+            label="BarSemantics"
+            type="object"
+            small
+            fields={[
+              "mood: enum",
+              "themes: string[]",
+              "techniques: string[]",
             ]}
           />
         </div>

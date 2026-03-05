@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
+  "schema_version": "0.2.0",
+  "meta": {
+    "source": "manual",
+    "artist": "Kendrick Lamar",
+    "generated_at": "2026-03-06T00:00:00Z",
+    "language": "en",
+    "description": "Mixed document with both grains and bars from DAMN."
+  },
+  "grains": [
+    {
+      "word": "hustle",
+      "normalized": "hustle",
+      "pos": "noun",
+      "frequency": 47,
+      "tfidf": 0.82,
+      "sentiment": "positive",
+      "categories": ["work", "struggle", "ambition"]
+    }
+  ],
+  "bars": [
+    {
+      "text": "I got hustle though, ambition flow inside my DNA",
+      "source": {
+        "track": "DNA.",
+        "album": "DAMN.",
+        "year": 2017
+      },
+      "metrics": {
+        "syllable_count": 15,
+        "word_count": 10
+      },
+      "semantics": {
+        "mood": "aggressive",
+        "themes": ["ambition", "identity"],
+        "techniques": ["metaphor"]
+      }
+    }
+  ]
+}

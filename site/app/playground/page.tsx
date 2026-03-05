@@ -18,7 +18,7 @@ export default function PlaygroundPage() {
 
   // Fetch schema on mount
   useEffect(() => {
-    fetch("/word-grain/schema/v0.1.0/wordgrain.schema.json")
+    fetch("/word-grain/schema/v0.2.0/wordgrain.schema.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load schema");
         return res.json();

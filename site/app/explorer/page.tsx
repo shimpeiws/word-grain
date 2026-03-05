@@ -94,21 +94,21 @@ export default function ExplorerPage() {
                   <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                     Word Cloud
                   </h2>
-                  <WordCloudViz grains={validatedData.grains} />
+                  <WordCloudViz grains={validatedData.grains ?? []} />
                 </section>
 
                 <section>
                   <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                     Top Words by Frequency
                   </h2>
-                  <FrequencyChart grains={validatedData.grains} />
+                  <FrequencyChart grains={validatedData.grains ?? []} />
                 </section>
 
                 <section>
                   <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                     Grain Data
                   </h2>
-                  <GrainDataTable grains={validatedData.grains} />
+                  <GrainDataTable grains={validatedData.grains ?? []} />
                 </section>
               </>
             )}

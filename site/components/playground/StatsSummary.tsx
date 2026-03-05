@@ -31,7 +31,7 @@ interface CommonWord {
 }
 
 function computeStats(doc: WordGrainDocument): DocumentStats {
-  const grains = doc.grains;
+  const grains = doc.grains ?? [];
   const grainCount = grains.length;
 
   const withFreq = grains.filter(
@@ -70,13 +70,13 @@ function findCommonWords(
   right: WordGrainDocument
 ): CommonWord[] {
   const rightMap = new Map<string, Grain>();
-  for (const g of right.grains) {
+  for (const g of right.grains ?? []) {
     const key = (g.normalized ?? g.word).toLowerCase();
     rightMap.set(key, g);
   }
 
   const common: CommonWord[] = [];
-  for (const g of left.grains) {
+  for (const g of left.grains ?? []) {
     const key = (g.normalized ?? g.word).toLowerCase();
     const match = rightMap.get(key);
     if (match) {

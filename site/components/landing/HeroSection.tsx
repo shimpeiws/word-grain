@@ -1,6 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
+type SnippetTab = "word" | "bar";
+
 export default function HeroSection() {
+  const [snippet, setSnippet] = useState<SnippetTab>("bar");
+
   return (
     <section className="relative overflow-hidden border-b border-zinc-200 dark:border-zinc-800">
       {/* Gradient background */}
@@ -13,12 +20,13 @@ export default function HeroSection() {
             WordGrain
           </h1>
           <p className="mt-6 text-xl text-zinc-600 sm:text-2xl dark:text-zinc-400">
-            A JSON format for vocabulary data from musical lyrics
+            A JSON format for vocabulary and lyrical structure data from musical
+            lyrics
           </p>
           <p className="mt-4 max-w-2xl text-base text-zinc-500 dark:text-zinc-500">
             WordGrain defines a standardized schema for storing vocabulary data
             extracted from musical lyrics -- word frequencies, sentiment, usage
-            contexts, and more.
+            contexts, and phrase-level mood analysis.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
@@ -63,25 +71,90 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Decorative code snippet */}
+        {/* Decorative code snippet with tab toggle */}
         <div className="absolute right-8 top-1/2 hidden -translate-y-1/2 lg:block">
-          <div className="w-96 rounded-lg border border-zinc-200/60 bg-white/70 p-8 font-mono text-base text-zinc-400 shadow-sm backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/70 dark:text-zinc-600">
-            <div className="text-zinc-500 dark:text-zinc-500">
-              {"{"} <span className="text-blue-600 dark:text-blue-400">&quot;word&quot;</span>: <span className="text-green-600 dark:text-green-400">&quot;hustle&quot;</span>,
+          <div className="w-96 rounded-lg border border-zinc-200/60 bg-white/70 shadow-sm backdrop-blur dark:border-zinc-700/60 dark:bg-zinc-900/70">
+            {/* Snippet tabs */}
+            <div className="flex border-b border-zinc-200/60 dark:border-zinc-700/60">
+              <button
+                type="button"
+                onClick={() => setSnippet("bar")}
+                className={`px-4 py-2 text-xs font-medium transition-colors ${
+                  snippet === "bar"
+                    ? "border-b-2 border-blue-500 text-blue-600 dark:text-blue-400"
+                    : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                }`}
+              >
+                bar
+              </button>
+              <button
+                type="button"
+                onClick={() => setSnippet("word")}
+                className={`px-4 py-2 text-xs font-medium transition-colors ${
+                  snippet === "word"
+                    ? "border-b-2 border-blue-500 text-blue-600 dark:text-blue-400"
+                    : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                }`}
+              >
+                word
+              </button>
             </div>
-            <div className="ml-6 text-zinc-500 dark:text-zinc-500">
-              <span className="text-blue-600 dark:text-blue-400">&quot;frequency&quot;</span>: <span className="text-amber-600 dark:text-amber-400">47</span>,
+
+            <div className="p-8 font-mono text-base text-zinc-400 dark:text-zinc-600">
+              {snippet === "bar" ? <BarSnippet /> : <WordSnippet />}
             </div>
-            <div className="ml-6 text-zinc-500 dark:text-zinc-500">
-              <span className="text-blue-600 dark:text-blue-400">&quot;sentiment&quot;</span>: <span className="text-green-600 dark:text-green-400">&quot;positive&quot;</span>,
-            </div>
-            <div className="ml-6 text-zinc-500 dark:text-zinc-500">
-              <span className="text-blue-600 dark:text-blue-400">&quot;tfidf&quot;</span>: <span className="text-amber-600 dark:text-amber-400">0.82</span>
-            </div>
-            <div className="text-zinc-500 dark:text-zinc-500">{"}"}</div>
           </div>
         </div>
       </div>
     </section>
   );
+}
+
+function BarSnippet() {
+  return (
+    <>
+      <Line>{"{"} <K>type</K>: <S>bar</S>,</Line>
+      <Line indent={1}><K>text</K>: <S>俺はまだ関係ねえ...</S>,</Line>
+      <Line indent={1}><K>source</K>: {"{"}</Line>
+      <Line indent={2}><K>artist</K>: <S>KOHH</S>,</Line>
+      <Line indent={2}><K>track</K>: <S>貧乏なんて気にしない</S></Line>
+      <Line indent={1}>{"}"},</Line>
+      <Line indent={1}><K>semantics</K>: {"{"}</Line>
+      <Line indent={2}><K>mood</K>: <S>defiant</S></Line>
+      <Line indent={1}>{"}"}</Line>
+      <Line>{"}"}</Line>
+    </>
+  );
+}
+
+function WordSnippet() {
+  return (
+    <>
+      <Line>{"{"} <K>word</K>: <S>hustle</S>,</Line>
+      <Line indent={1}><K>frequency</K>: <N>47</N>,</Line>
+      <Line indent={1}><K>sentiment</K>: <S>positive</S>,</Line>
+      <Line indent={1}><K>tfidf</K>: <N>0.82</N></Line>
+      <Line>{"}"}</Line>
+    </>
+  );
+}
+
+function Line({ children, indent = 0 }: { children: React.ReactNode; indent?: number }) {
+  return (
+    <div className={`text-zinc-500 dark:text-zinc-500`} style={{ marginLeft: indent * 24 }}>
+      {children}
+    </div>
+  );
+}
+
+function K({ children }: { children: React.ReactNode }) {
+  return <span className="text-blue-600 dark:text-blue-400">&quot;{children}&quot;</span>;
+}
+
+function S({ children }: { children: React.ReactNode }) {
+  return <span className="text-green-600 dark:text-green-400">&quot;{children}&quot;</span>;
+}
+
+function N({ children }: { children: React.ReactNode }) {
+  return <span className="text-amber-600 dark:text-amber-400">{children}</span>;
 }

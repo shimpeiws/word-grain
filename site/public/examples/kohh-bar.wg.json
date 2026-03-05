@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/shimpeiws/word-grain/main/schema/v0.2.0/wordgrain.schema.json",
+  "schema_version": "0.2.0",
+  "type": "bar",
+  "text": "俺はまだ関係ねえ 関係ねえ 関係ねえ",
+  "source": {
+    "artist": "KOHH",
+    "track": "貧乏なんて気にしない",
+    "album": "YELLOW T△PE 3",
+    "year": 2016
+  },
+  "metrics": {
+    "lines": 1,
+    "syllables": 18,
+    "mora": 20
+  },
+  "semantics": {
+    "mood": "defiant"
+  },
+  "language": "ja"
+}

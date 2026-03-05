@@ -4,7 +4,7 @@ export async function loadSchema(): Promise<Record<string, unknown>> {
   if (cachedSchema) return cachedSchema;
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_PATH ?? "/word-grain"}/schema/v0.1.0/wordgrain.schema.json`
+    `${process.env.NEXT_PUBLIC_BASE_PATH ?? "/word-grain"}/schema/v0.2.0/wordgrain.schema.json`
   );
   cachedSchema = (await res.json()) as Record<string, unknown>;
   return cachedSchema;

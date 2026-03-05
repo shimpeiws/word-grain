@@ -55,8 +55,58 @@ export interface Meta {
   description?: string;
 }
 
-export interface WordGrainDocument {
+export type Mood =
+  | "cold"
+  | "defiant"
+  | "melancholic"
+  | "aggressive"
+  | "introspective"
+  | "celebratory"
+  | "tender"
+  | "weary";
+
+export interface BarSource {
+  artist: string;
+  track: string;
+  album?: string;
+  year?: number;
+  featuring?: string[];
+}
+
+export interface BarMetrics {
+  lines?: number;
+  syllables?: number;
+  mora?: number | null;
+}
+
+export interface BarSemantics {
+  mood?: Mood;
+}
+
+export interface WordDocument {
   $schema: string;
+  schema_version: string;
+  type: "word";
   meta: Meta;
   grains: Grain[];
 }
+
+export interface BarDocument {
+  $schema: string;
+  schema_version: string;
+  type: "bar";
+  text: string;
+  source: BarSource;
+  metrics?: BarMetrics;
+  semantics?: BarSemantics;
+  language?: string;
+}
+
+export interface VerseDocument {
+  $schema: string;
+  schema_version: string;
+  type: "verse";
+  [key: string]: unknown;
+}
+
+export type WordGrainDocument = WordDocument | BarDocument | VerseDocument;

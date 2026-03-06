@@ -7,6 +7,9 @@ import SchemaViewer from "@/components/explorer/SchemaViewer";
 import WordCloudViz from "@/components/explorer/WordCloudViz";
 import FrequencyChart from "@/components/explorer/FrequencyChart";
 import GrainDataTable from "@/components/explorer/GrainDataTable";
+import BarDataTable from "@/components/explorer/BarDataTable";
+import MoodChart from "@/components/explorer/MoodChart";
+import BarsMetricsChart from "@/components/explorer/BarsMetricsChart";
 import type { WordGrainDocument } from "@/lib/types";
 
 type Tab = "validator" | "schema" | "visualization";
@@ -90,26 +93,55 @@ export default function ExplorerPage() {
               </div>
             ) : (
               <>
-                <section>
-                  <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                    Word Cloud
-                  </h2>
-                  <WordCloudViz grains={validatedData.grains ?? []} />
-                </section>
+                {(validatedData.grains?.length ?? 0) > 0 && (
+                  <>
+                    <section>
+                      <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                        Word Cloud
+                      </h2>
+                      <WordCloudViz grains={validatedData.grains ?? []} />
+                    </section>
 
-                <section>
-                  <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                    Top Words by Frequency
-                  </h2>
-                  <FrequencyChart grains={validatedData.grains ?? []} />
-                </section>
+                    <section>
+                      <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                        Top Words by Frequency
+                      </h2>
+                      <FrequencyChart grains={validatedData.grains ?? []} />
+                    </section>
 
-                <section>
-                  <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                    Grain Data
-                  </h2>
-                  <GrainDataTable grains={validatedData.grains ?? []} />
-                </section>
+                    <section>
+                      <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                        Grain Data
+                      </h2>
+                      <GrainDataTable grains={validatedData.grains ?? []} />
+                    </section>
+                  </>
+                )}
+
+                {(validatedData.bars?.length ?? 0) > 0 && (
+                  <>
+                    <section>
+                      <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                        Mood Distribution
+                      </h2>
+                      <MoodChart bars={validatedData.bars ?? []} />
+                    </section>
+
+                    <section>
+                      <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                        Bar Metrics
+                      </h2>
+                      <BarsMetricsChart bars={validatedData.bars ?? []} />
+                    </section>
+
+                    <section>
+                      <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                        Bar Data
+                      </h2>
+                      <BarDataTable bars={validatedData.bars ?? []} />
+                    </section>
+                  </>
+                )}
               </>
             )}
           </div>
